@@ -6,10 +6,7 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -107,9 +104,15 @@ public class Notepad {
     private String filename = "untitled";
     // the file saving status
     public boolean saved = false;
+
     @FXML
     void AboutOnClick(ActionEvent event) {
-
+        Alert alert = new Alert(Alert.AlertType.INFORMATION,
+                "Team member: Pang Qianjin, Gao Yi\nThe Notepad is in developing",
+                new ButtonType("Confirm", ButtonBar.ButtonData.RIGHT));
+        alert.setTitle("About");
+        alert.setHeaderText("About NotePad");
+        alert.showAndWait();
     }
 
     @FXML
@@ -128,18 +131,18 @@ public class Notepad {
         WebView webView = new WebView();
         WebEngine webEngine = webView.getEngine();
         // generate a html file and load it
-        File html = Utils.writeFileString((this.filename+".html"),
+        File html = Utils.writeFileString((this.filename + ".html"),
                 Utils.getRenderedText(textArea.getText()));
         URL url = html.toURI().toURL();
         webEngine.load(url.toString());
 
         // show the read view to read code
-        Utils.showReadView(this.filename,webView);
+        Utils.showReadView(this.filename, webView);
     }
 
     @FXML
     void ExitOnClick(ActionEvent event) {
-        if(this.saved||Utils.ifToExit("Your file has not been saved")) {
+        if (this.saved || Utils.ifToExit("Your file has not been saved")) {
             exit = true;
             Stage stage = (Stage) textArea.getScene().getWindow();
             stage.close();
@@ -163,13 +166,12 @@ public class Notepad {
         // choose a file to open
         File f = Utils.chooseAFile("choose a file to open",
                 FileOperation.OPEN);
-        this.filename = f!=null?f.getName():"untitled";
+        this.filename = f != null ? f.getName() : "untitled";
         String content = "";
-        if(f!=null&&f.getName().endsWith(".odt")){
+        if (f != null && f.getName().endsWith(".odt")) {
             content = Utils.getOdtString(f);
             textArea.setText(content);
-        }
-        else if(f!=null){ // common text file
+        } else if (f != null) { // common text file
             content = Utils.getFileString(f);
             textArea.setText(content);
         }
@@ -192,13 +194,13 @@ public class Notepad {
         // a save dialog to save
         File f = Utils.chooseAFile("choose a position to save",
                 FileOperation.SAVE);
-        if(f!=null){
+        if (f != null) {
             Utils.writeFileString(f.getAbsolutePath(), textArea.getText());
             this.saved = true;
         }
     }
 
-    // remove the "\n"
+    // Remove illegal characters "\n" in PDFBOX
     private static List<String> remove(String text) {
         ArrayList<String> strings = new ArrayList<>();
 
@@ -206,7 +208,7 @@ public class Notepad {
         for (int i = 0; i < text.length(); i++) {
             if (WinAnsiEncoding.INSTANCE.contains(text.charAt(i))) {
                 b.append(text.charAt(i));
-            }else{
+            } else {
                 strings.add(b.toString());
                 b = new StringBuilder();
             }
@@ -236,7 +238,7 @@ public class Notepad {
                 try {
                     contentStream.showText(str);
                     contentStream.newLine();
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             });
