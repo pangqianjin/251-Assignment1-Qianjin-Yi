@@ -3,6 +3,7 @@
  */
 
 import java.net.URL;
+import java.time.LocalTime;
 import java.util.ResourceBundle;
 
 import javafx.event.ActionEvent;
@@ -72,6 +73,7 @@ public class Notepad {
     @FXML // fx:id="textArea"
     private TextArea textArea; // Value injected by FXMLLoader
 
+    public static boolean exit = false;
 
     @FXML
     void AboutOnClick(ActionEvent event) {
@@ -166,6 +168,24 @@ public class Notepad {
         });
     }
 
+    private void updateTime() {
+        LocalTime now = LocalTime.now();
+        TimeAndDate.setText(String.format("Time %d:%d:%d", now.getHour(), now.getMinute(), now.getSecond()));
+    }
+
+    private void showTime() {
+        // the clock thread is not stopped till the windows closed
+        new Thread(() -> {
+            while (!exit) {
+                updateTime();
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
 
     @FXML
         // This method is called by the FXMLLoader when initialization is complete
@@ -184,6 +204,9 @@ public class Notepad {
         assert SearchHBox != null : "fx:id=\"SearchHBox\" was not injected: check your FXML file 'notepad.fxml'.";
         assert SearchArea != null : "fx:id=\"SearchArea\" was not injected: check your FXML file 'notepad.fxml'.";
         assert textArea != null : "fx:id=\"textArea\" was not injected: check your FXML file 'notepad.fxml'.";
+        // call shortcuts() and showtTime()
         shortcuts();
+        showTime();
+
     }
 }
