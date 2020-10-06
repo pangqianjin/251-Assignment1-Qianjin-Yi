@@ -2,11 +2,13 @@
  * Sample Skeleton for 'notepad.fxml' Controller Class
  */
 
+import java.io.IOException;
 import java.net.URL;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -17,6 +19,7 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
 public class Notepad {
 
@@ -84,12 +87,12 @@ public class Notepad {
 
     @FXML
     void CopyOnClick(ActionEvent event) {
-
+        textArea.copy();
     }
 
     @FXML
     void CutOnClick(ActionEvent event) {
-
+        textArea.cut();
     }
 
     @FXML
@@ -99,7 +102,14 @@ public class Notepad {
 
     @FXML
     void NewOnClick(ActionEvent event) {
-
+        // to create a new (fresh) window
+        Platform.runLater(() -> {
+            try {
+                new Main().start(new Stage());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     @FXML
@@ -109,7 +119,7 @@ public class Notepad {
 
     @FXML
     void PasteOnclick(ActionEvent event) {
-
+        textArea.paste();
     }
 
     @FXML
