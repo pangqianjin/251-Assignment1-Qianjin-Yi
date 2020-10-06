@@ -98,7 +98,7 @@ public class Notepad {
     public static volatile boolean exit = false;
 
     // store the keys anchor
-    protected List<int[]> keysCoordinates = new LinkedList<>();
+    protected static List<int[]> keysCoordinates = new LinkedList<>();
 
     // the filename for current text area, if not it will be untitled
     private String filename = "untitled";
