@@ -29,7 +29,7 @@
                       </Menu>
                       <Menu fx:id="ToSearch" mnemonicParsing="false" text="Search">
                            <items>
-                              <MenuItem mnemonicParsing="false" onAction="#ToSearch" text="Search" />
+                              <MenuItem fx:id="searchItem" mnemonicParsing="false" onAction="#ToSearch" text="Search" />
                            </items>
                       </Menu>
                       <Menu mnemonicParsing="false" text="View">
@@ -58,7 +58,7 @@
                   </Text>
                </children>
             </HBox>
-            <HBox fx:id="SearchHBox" prefHeight="100.0" prefWidth="200.0">
+            <HBox fx:id="SearchHBox" prefHeight="100.0" prefWidth="200.0" visible="false">
                <children>
                   <TextField fx:id="SearchArea" promptText="Next to search">
                      <HBox.margin>

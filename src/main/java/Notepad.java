@@ -6,15 +6,23 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 
 public class Notepad {
+
+    @FXML
+    private MenuItem searchItem;
 
     @FXML // ResourceBundle that was given to the FXMLLoader
     private ResourceBundle resources;
@@ -112,17 +120,50 @@ public class Notepad {
 
     @FXML
     void ToSearch(ActionEvent event) {
-
+        SearchHBox.setVisible(true);
     }
 
     @FXML
     void closeSearch(ActionEvent event) {
-
+        SearchHBox.setVisible(false);
     }
 
     @FXML
     void searchNow(ActionEvent event) {
 
+    }
+
+    private void shortcuts() {
+        Save.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN));
+        Open.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN));
+
+        searchItem.setAccelerator(new KeyCodeCombination(KeyCode.F, KeyCombination.CONTROL_DOWN));
+
+        textArea.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
+            final KeyCombination keyComb_X = new KeyCodeCombination(KeyCode.X,
+                    KeyCombination.CONTROL_DOWN);
+            final KeyCombination keyComb_C = new KeyCodeCombination(KeyCode.C,
+                    KeyCombination.CONTROL_DOWN);
+            final KeyCombination keyComb_V = new KeyCodeCombination(KeyCode.V,
+                    KeyCombination.CONTROL_DOWN);
+
+            public void handle(KeyEvent ke) {
+                if (keyComb_C.match(ke)) {
+                    System.out.println("Key Pressed: " + keyComb_C);
+                    textArea.copy();
+                } else if (keyComb_V.match(ke)) {
+                    System.out.println("Key Pressed: " + keyComb_V);
+                    textArea.paste();
+                } else if (keyComb_X.match(ke)) {
+                    System.out.println("Key Pressed: " + keyComb_X);
+                    textArea.cut();
+                } else {
+                    return;
+                }
+                ke.consume(); // <-- stops passing the event to next node
+
+            }
+        });
     }
 
 
@@ -143,6 +184,6 @@ public class Notepad {
         assert SearchHBox != null : "fx:id=\"SearchHBox\" was not injected: check your FXML file 'notepad.fxml'.";
         assert SearchArea != null : "fx:id=\"SearchArea\" was not injected: check your FXML file 'notepad.fxml'.";
         assert textArea != null : "fx:id=\"textArea\" was not injected: check your FXML file 'notepad.fxml'.";
-
+        shortcuts();
     }
 }
