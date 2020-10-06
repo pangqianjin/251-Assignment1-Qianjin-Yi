@@ -4,15 +4,13 @@
 
 import java.net.URL;
 import java.time.LocalTime;
-import java.util.ResourceBundle;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -73,7 +71,11 @@ public class Notepad {
     @FXML // fx:id="textArea"
     private TextArea textArea; // Value injected by FXMLLoader
 
-    public static boolean exit = false;
+    // the time thread stop variable
+    public static volatile boolean exit = false;
+
+    // store the keys anchor
+    protected List<int[]> keysCoordinates = new LinkedList<>();
 
     @FXML
     void AboutOnClick(ActionEvent event) {
@@ -127,20 +129,75 @@ public class Notepad {
 
     @FXML
     void closeSearch(ActionEvent event) {
+        textArea.deselect();
+        keysCoordinates.clear();
         SearchHBox.setVisible(false);
     }
 
-    @FXML
-    void searchNow(ActionEvent event) {
+    private void highlight(int[] keyCoordinate) {
 
+        textArea.selectRange(keyCoordinate[0], keyCoordinate[1]);
+        textArea.setStyle("-fx-highlight-fill: yellow");
+
+        // cycle the keys coordinates
+        Collections.rotate(keysCoordinates, -1);
+    }
+
+    private void keys2Coordinate(String key, int keyLen) {
+        // filter the line contains key
+        List<String> keyLine = textArea.getParagraphs()
+                .parallelStream()
+                .filter(oneLine -> oneLine.toString().contains(key))
+                .map(CharSequence::toString)
+                .collect(Collectors.toList());
+
+        int anchor = 0;
+        // every line
+        for (String str : keyLine) {
+            int lineLen = str.length();
+            // set select anchor start
+            anchor += str.indexOf(key);
+            for (; anchor <= lineLen - keyLen; anchor++) {
+                // find the substring and check whether contains key
+                String substring = str.substring(anchor, anchor + keyLen);
+                if (substring.contains(key)) {
+                    int[] c = {anchor, anchor + keyLen};
+                    if (keysCoordinates.contains(c)) continue;
+                    keysCoordinates.add(c);
+                }
+            }
+            // next line needs to relocate the anchor
+            anchor = lineLen;
+        }
+    }
+
+    @FXML
+    void searchKeys(ActionEvent event) {
+        // avoid duplicate coordinates
+        if (keysCoordinates.size() > 0) keysCoordinates.clear();
+
+        String key = SearchArea.getText();
+        if (key == null || key.equals("")) return;
+        int keyLen = key.length();
+        keys2Coordinate(key, keyLen);
+        nextKey(new ActionEvent());
+    }
+
+
+    @FXML
+    void nextKey(ActionEvent event) {
+        if (keysCoordinates.size() > 0) highlight(keysCoordinates.get(0));
+        else searchKeys(new ActionEvent());
     }
 
     private void shortcuts() {
+        // save and open shortcuts
         Save.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN));
         Open.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN));
-
+        // search shortcut
         searchItem.setAccelerator(new KeyCodeCombination(KeyCode.F, KeyCombination.CONTROL_DOWN));
 
+        // cut copy paste shortcuts
         textArea.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
             final KeyCombination keyComb_X = new KeyCodeCombination(KeyCode.X,
                     KeyCombination.CONTROL_DOWN);
@@ -167,6 +224,8 @@ public class Notepad {
             }
         });
     }
+
+
 
     private void updateTime() {
         LocalTime now = LocalTime.now();
@@ -204,9 +263,10 @@ public class Notepad {
         assert SearchHBox != null : "fx:id=\"SearchHBox\" was not injected: check your FXML file 'notepad.fxml'.";
         assert SearchArea != null : "fx:id=\"SearchArea\" was not injected: check your FXML file 'notepad.fxml'.";
         assert textArea != null : "fx:id=\"textArea\" was not injected: check your FXML file 'notepad.fxml'.";
-        // call shortcuts() and showtTime()
+        // call shortcuts() and showTime()
         shortcuts();
         showTime();
 
     }
+
 }

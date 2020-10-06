@@ -60,12 +60,12 @@
             </HBox>
             <HBox fx:id="SearchHBox" prefHeight="100.0" prefWidth="200.0" visible="false">
                <children>
-                  <TextField fx:id="SearchArea" promptText="Next to search">
+                  <TextField fx:id="SearchArea" promptText="Next to search" onAction="#searchKeys">
                      <HBox.margin>
                         <Insets right="10.0" />
                      </HBox.margin>
                   </TextField>
-                  <Button mnemonicParsing="false" onAction="#searchNow" text="Next">
+                  <Button mnemonicParsing="false" onAction="#nextKey" text="Next">
                      <HBox.margin>
                         <Insets left="10.0" right="10.0" />
                      </HBox.margin>
