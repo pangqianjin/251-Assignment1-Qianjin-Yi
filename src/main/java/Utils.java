@@ -21,8 +21,10 @@ import java.util.Set;
 
 public class Utils {
 
+    
+
     // decide if to exit if the current page has not been saved
-    public static boolean ifToExit(String message){
+    public static boolean ifToExit(String message) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
                 "Do you want to leave?",
                 new ButtonType("cancel", ButtonBar.ButtonData.NO),
@@ -34,20 +36,23 @@ public class Utils {
         return buttonType.filter(type -> !type.getButtonData().equals(ButtonBar.ButtonData.NO)).isPresent();
     }
 
+
     // show a file chooser to choose a file and return it
-    public static File chooseAFile(String message, FileOperation operation){
+    public static File chooseAFile(String message, FileOperation operation) {
         FileChooser fileChooser = new FileChooser();
+        // choose current directory
+        fileChooser.setInitialDirectory(new File("./"));
         fileChooser.setTitle(message);
         // add filters for extension file name
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("JAVA", "*.java"),
                 new FileChooser.ExtensionFilter("PY", "*.py"),
                 new FileChooser.ExtensionFilter("CPP", "*.cpp"),
-                new FileChooser.ExtensionFilter("C","*.c"),
-                new FileChooser.ExtensionFilter("TXT","*.txt"),
-                new FileChooser.ExtensionFilter("OpenDocument Text","*.odt")
+                new FileChooser.ExtensionFilter("C", "*.c"),
+                new FileChooser.ExtensionFilter("TXT", "*.txt"),
+                new FileChooser.ExtensionFilter("OpenDocument Text", "*.odt")
         );
-        return operation==FileOperation.OPEN?fileChooser.showOpenDialog(new Stage()):
+        return operation == FileOperation.OPEN ? fileChooser.showOpenDialog(new Stage()) :
                 fileChooser.showSaveDialog(new Stage());
     }
 
@@ -56,13 +61,13 @@ public class Utils {
         OdfDocument document = OdfDocument.loadDocument(file);
         OfficeTextElement officeTextElement = (OfficeTextElement) document.getContentRoot();
         return officeTextElement.getTextContent().
-                replaceAll("\r","\r\n");
+                replaceAll("\r", "\r\n");
     }
 
     // read String from a file
     public static String getFileString(File file) throws IOException {
         FileInputStream in = new FileInputStream(file);
-        byte[] fileContent = new byte[(int)file.length()];
+        byte[] fileContent = new byte[(int) file.length()];
         in.read(fileContent);
         in.close();
         return new String(fileContent, StandardCharsets.UTF_8);
@@ -79,7 +84,7 @@ public class Utils {
 
 
     // show the read view to read code
-    public static void showReadView(String filename, WebView webView){
+    public static void showReadView(String filename, WebView webView) {
         StackPane root = new StackPane(webView);
         Stage stage = new Stage();
         Scene scene = new Scene(root);
@@ -89,7 +94,7 @@ public class Utils {
     }
 
     // return a html structure String
-    public static String getRenderedText(String src){
+    public static String getRenderedText(String src) {
         int STATE_TEXT = 1;
         int STATE_DOUBLE_QUOTE = 2;
         int STATE_SINGLE_QUOTE = 3;
@@ -97,18 +102,18 @@ public class Utils {
         int STATE_LINE_COMMENT = 5;
         int lineNumber = 0;
 
-        String[] literalArray = { "null", "true", "false", "None", "True",
+        String[] literalArray = {"null", "true", "false", "None", "True",
                 "False"};
-        String[] keywordArray = { "abstract", "break", "case", "catch", "class",
+        String[] keywordArray = {"abstract", "break", "case", "catch", "class",
                 "Class", "in", "del", "friend", "inline", "const",
                 "const", "continue", "default", "do", "else", "extends", "final",
                 "finally", "for", "goto", "if", "implements", "import",
                 "instanceof", "interface", "native", "new", "package", "private",
                 "protected", "public", "return", "static", "strictfp", "super",
                 "switch", "synchronized", "this", "throw", "throws", "transient",
-                "try", "volatile", "while" };
-        String[] primitiveTypeArray = { "boolean", "char", "byte", "short", "int",
-                "long", "float", "double", "void" };
+                "try", "volatile", "while"};
+        String[] primitiveTypeArray = {"boolean", "char", "byte", "short", "int",
+                "long", "float", "double", "void"};
 
         Set<String> literalSet = new HashSet<String>(Arrays.asList(literalArray));
         Set<String> keywordSet = new HashSet<String>(Arrays.asList(keywordArray));

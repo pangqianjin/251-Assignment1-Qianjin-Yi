@@ -41,6 +41,12 @@ import java.util.stream.Collectors;
 public class Notepad {
 
     @FXML
+    private Menu File;
+
+    @FXML
+    private Button next;
+
+    @FXML
     private MenuItem exportItem;
 
     @FXML
@@ -98,7 +104,7 @@ public class Notepad {
     public static volatile boolean exit = false;
 
     // store the keys anchor
-    protected List<int[]> keysCoordinates = new LinkedList<>();
+    protected static List<int[]> keysCoordinates = new LinkedList<>();
 
     // the filename for current text area, if not it will be untitled
     private String filename = "untitled";
@@ -200,7 +206,7 @@ public class Notepad {
         }
     }
 
-    // remove the "\n"
+    // remove invalid type "\n" in PDFBOX
     private static List<String> remove(String text) {
         ArrayList<String> strings = new ArrayList<>();
 
