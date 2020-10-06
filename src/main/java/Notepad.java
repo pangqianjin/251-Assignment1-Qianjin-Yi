@@ -2,7 +2,9 @@
  * Sample Skeleton for 'notepad.fxml' Controller Class
  */
 
+import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalTime;
 import java.util.*;
@@ -19,6 +21,8 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 
 public class Notepad {
@@ -80,6 +84,8 @@ public class Notepad {
     // store the keys anchor
     protected List<int[]> keysCoordinates = new LinkedList<>();
 
+    // the filename for current text area, if not it will be untitled
+    private String filename = "untitled";
     @FXML
     void AboutOnClick(ActionEvent event) {
 
@@ -93,6 +99,21 @@ public class Notepad {
     @FXML
     void CutOnClick(ActionEvent event) {
         textArea.cut();
+    }
+
+    @FXML
+    void syntax(ActionEvent event) throws IOException {
+        // new WebView and WebEngine
+        WebView webView = new WebView();
+        WebEngine webEngine = webView.getEngine();
+        // generate a html file and load it
+        File html = Utils.writeFileString((this.filename+".html"),
+                Utils.getRenderedText(textArea.getText()));
+        URL url = html.toURI().toURL();
+        webEngine.load(url.toString());
+
+        // show the read view to read code
+        Utils.showReadView(this.filename,webView);
     }
 
     @FXML
@@ -113,8 +134,20 @@ public class Notepad {
     }
 
     @FXML
-    void OpenOnClick(ActionEvent event) {
-
+    void OpenOnClick(ActionEvent event) throws Exception {
+        // choose a file to open
+        File f = Utils.chooseAFile("choose a file to open",
+                FileOperation.OPEN);
+        this.filename = f!=null?f.getName():"untitled";
+        String content = "";
+        if(f!=null&&f.getName().endsWith(".odt")){
+            content = Utils.getOdtString(f);
+            textArea.setText(content);
+        }
+        else if(f!=null){ // common text file
+            content = Utils.getFileString(f);
+            textArea.setText(content);
+        }
     }
 
     @FXML
