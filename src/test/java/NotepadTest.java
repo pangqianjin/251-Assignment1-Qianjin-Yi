@@ -1,3 +1,4 @@
+import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -12,8 +13,6 @@ import java.io.IOException;
 
 @ExtendWith(ApplicationExtension.class)
 class NotepadTest {
-
-
     @BeforeAll
     public static void setUpClass() throws Exception {
         ApplicationTest.launch(Main.class);
@@ -22,6 +21,7 @@ class NotepadTest {
 
     @Start
     private void start(Stage stage) throws IOException {
+
     }
 
     /**
