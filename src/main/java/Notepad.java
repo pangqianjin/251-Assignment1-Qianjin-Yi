@@ -2,6 +2,35 @@
  * Sample Skeleton for 'notepad.fxml' Controller Class
  */
 
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.fxml.FXML;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.HBox;
+import javafx.scene.text.Text;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
+import javafx.stage.FileChooser;
+import javafx.stage.PopupWindow;
+import javafx.stage.Stage;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.font.encoding.WinAnsiEncoding;
+
+import javax.print.*;
+import javax.print.attribute.DocAttributeSet;
+import javax.print.attribute.HashDocAttributeSet;
+import javax.print.attribute.HashPrintRequestAttributeSet;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -11,33 +40,6 @@ import java.nio.file.Paths;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
-import javafx.scene.input.KeyCombination;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.HBox;
-import javafx.scene.text.Text;
-import javafx.stage.FileChooser;
-import javafx.stage.PopupWindow;
-import javafx.stage.Stage;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
-import org.apache.pdfbox.pdmodel.font.encoding.WinAnsiEncoding;
-import org.apache.pdfbox.util.Matrix;
-
-import javax.print.*;
-import javax.print.attribute.DocAttributeSet;
-import javax.print.attribute.HashDocAttributeSet;
-import javax.print.attribute.HashPrintRequestAttributeSet;
 
 public class Notepad {
 
@@ -101,6 +103,10 @@ public class Notepad {
     // store the keys anchor
     protected List<int[]> keysCoordinates = new LinkedList<>();
 
+    // the filename for current text area, if not it will be untitled
+    private String filename = "untitled";
+    // the file saving status
+    public boolean saved = false;
     @FXML
     void AboutOnClick(ActionEvent event) {
 
@@ -117,8 +123,27 @@ public class Notepad {
     }
 
     @FXML
-    void ExitOnClick(ActionEvent event) {
+    void syntax(ActionEvent event) throws IOException {
+        // new WebView and WebEngine
+        WebView webView = new WebView();
+        WebEngine webEngine = webView.getEngine();
+        // generate a html file and load it
+        File html = Utils.writeFileString((this.filename+".html"),
+                Utils.getRenderedText(textArea.getText()));
+        URL url = html.toURI().toURL();
+        webEngine.load(url.toString());
 
+        // show the read view to read code
+        Utils.showReadView(this.filename,webView);
+    }
+
+    @FXML
+    void ExitOnClick(ActionEvent event) {
+        if(this.saved||Utils.ifToExit("Your file has not been saved")) {
+            exit = true;
+            Stage stage = (Stage) textArea.getScene().getWindow();
+            stage.close();
+        }
     }
 
     @FXML
@@ -134,8 +159,20 @@ public class Notepad {
     }
 
     @FXML
-    void OpenOnClick(ActionEvent event) {
-
+    void OpenOnClick(ActionEvent event) throws Exception {
+        // choose a file to open
+        File f = Utils.chooseAFile("choose a file to open",
+                FileOperation.OPEN);
+        this.filename = f!=null?f.getName():"untitled";
+        String content = "";
+        if(f!=null&&f.getName().endsWith(".odt")){
+            content = Utils.getOdtString(f);
+            textArea.setText(content);
+        }
+        else if(f!=null){ // common text file
+            content = Utils.getFileString(f);
+            textArea.setText(content);
+        }
     }
 
     @FXML
@@ -151,8 +188,14 @@ public class Notepad {
     }
 
     @FXML
-    void SaveOnClick(ActionEvent event) {
-
+    void SaveOnClick(ActionEvent event) throws IOException {
+        // a save dialog to save
+        File f = Utils.chooseAFile("choose a position to save",
+                FileOperation.SAVE);
+        if(f!=null){
+            Utils.writeFileString(f.getAbsolutePath(), textArea.getText());
+            this.saved = true;
+        }
     }
 
     // remove the "\n"

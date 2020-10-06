@@ -1,0 +1,27 @@
+.lineNumberStyle{
+    color: rgba(0, 128, 128, 1);
+}
+.keywordStyle{
+    color: #800000;
+}
+.nonPrimitiveTypeStyle{
+    color: #004a43;
+}
+.doubleQuoteStyle{
+    color: #800000;
+}
+.singleQuoteStyle{
+    color: #0000e6;
+}
+.constantStyle{
+    color: #696969;
+}
+.literalStyle{
+    color: #0000e6;
+}
+.primitiveTypeStyle{
+    color: #bb7977;
+}
+.multiLineCommentStyle{
+    color:#3f5fbf;
+}

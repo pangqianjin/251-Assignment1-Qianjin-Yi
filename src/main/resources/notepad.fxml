@@ -37,6 +37,7 @@
                               <MenuItem fx:id="Copy" mnemonicParsing="false" onAction="#CopyOnClick" text="Copy(C)    Ctrl+C" />
                               <MenuItem fx:id="Paste" mnemonicParsing="false" onAction="#PasteOnclick" text="Paste(V)    Ctrl+V" />
                               <MenuItem fx:id="Cut" mnemonicParsing="false" onAction="#CutOnClick" text="Cut(X)    Ctrl+X" />
+                              <MenuItem mnemonicParsing="false" onAction="#syntax" text="syntax" />
                            </items>
                       </Menu>
                         <Menu mnemonicParsing="false" text="Manage">
@@ -61,7 +62,7 @@
             </HBox>
             <HBox fx:id="SearchHBox" prefHeight="100.0" prefWidth="200.0" visible="false">
                <children>
-                  <TextField fx:id="SearchArea" promptText="Next to search" onAction="#searchKeys">
+                  <TextField fx:id="SearchArea" onAction="#searchKeys" promptText="Next to search">
                      <HBox.margin>
                         <Insets right="10.0" />
                      </HBox.margin>
