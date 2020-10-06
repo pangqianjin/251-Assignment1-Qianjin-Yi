@@ -86,6 +86,8 @@ public class Notepad {
 
     // the filename for current text area, if not it will be untitled
     private String filename = "untitled";
+    // the file saving status
+    public boolean saved = false;
     @FXML
     void AboutOnClick(ActionEvent event) {
 
@@ -118,7 +120,11 @@ public class Notepad {
 
     @FXML
     void ExitOnClick(ActionEvent event) {
-
+        if(this.saved||Utils.ifToExit("Your file has not been saved")) {
+            exit = true;
+            Stage stage = (Stage) textArea.getScene().getWindow();
+            stage.close();
+        }
     }
 
     @FXML
@@ -161,8 +167,14 @@ public class Notepad {
     }
 
     @FXML
-    void SaveOnClick(ActionEvent event) {
-
+    void SaveOnClick(ActionEvent event) throws IOException {
+        // a save dialog to save
+        File f = Utils.chooseAFile("choose a position to save",
+                FileOperation.SAVE);
+        if(f!=null){
+            Utils.writeFileString(f.getAbsolutePath(), textArea.getText());
+            this.saved = true;
+        }
     }
 
     @FXML

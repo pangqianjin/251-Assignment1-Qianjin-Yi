@@ -1,4 +1,7 @@
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.StackPane;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
@@ -13,9 +16,23 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 public class Utils {
+
+    // decide if to exit if the current page has not been saved
+    public static boolean ifToExit(String message){
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
+                "Do you want to leave?",
+                new ButtonType("cancel", ButtonBar.ButtonData.NO),
+                new ButtonType("confirm", ButtonBar.ButtonData.YES)
+        );
+        alert.setTitle("important info");
+        alert.setHeaderText(message);
+        Optional<ButtonType> buttonType = alert.showAndWait();
+        return buttonType.filter(type -> !type.getButtonData().equals(ButtonBar.ButtonData.NO)).isPresent();
+    }
 
     // show a file chooser to choose a file and return it
     public static File chooseAFile(String message, FileOperation operation){
@@ -59,6 +76,7 @@ public class Utils {
         fw.close();
         return file;
     }
+
 
     // show the read view to read code
     public static void showReadView(String filename, WebView webView){
