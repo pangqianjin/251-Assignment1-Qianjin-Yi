@@ -6,6 +6,8 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
+import java.io.File;
+
 public class Main extends Application {
 
     @Override
@@ -14,6 +16,13 @@ public class Main extends Application {
             @Override
             public void handle(WindowEvent event) {
                 Notepad.exit = true;
+                // delete all the temporary html files generated
+                File[] folder = new File("./").listFiles();
+                for(File file: folder){
+                    if(file.getName().endsWith(".html")){
+                        file.delete();
+                    }
+                }
             }
         });
 
