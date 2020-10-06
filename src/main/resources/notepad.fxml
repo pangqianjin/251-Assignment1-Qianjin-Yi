@@ -41,6 +41,7 @@
                       </Menu>
                         <Menu mnemonicParsing="false" text="Manage">
                           <items>
+                              <MenuItem fx:id="exportItem" mnemonicParsing="false" onAction="#export2pdf" text="Export"/>
                             <MenuItem fx:id="Print" mnemonicParsing="false" onAction="#PrintOnClick" text="Print" />
                           </items>
                         </Menu>

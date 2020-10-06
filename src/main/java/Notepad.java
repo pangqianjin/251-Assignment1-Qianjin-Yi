@@ -2,8 +2,12 @@
  * Sample Skeleton for 'notepad.fxml' Controller Class
  */
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -19,9 +23,26 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
+import javafx.stage.PopupWindow;
 import javafx.stage.Stage;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.font.encoding.WinAnsiEncoding;
+import org.apache.pdfbox.util.Matrix;
+
+import javax.print.*;
+import javax.print.attribute.DocAttributeSet;
+import javax.print.attribute.HashDocAttributeSet;
+import javax.print.attribute.HashPrintRequestAttributeSet;
 
 public class Notepad {
+
+    @FXML
+    private MenuItem exportItem;
 
     @FXML
     private MenuItem searchItem;
@@ -123,13 +144,109 @@ public class Notepad {
     }
 
     @FXML
-    void PrintOnClick(ActionEvent event) {
-
+    void PrintOnClick(ActionEvent event) throws IOException {
+        export2pdf("FileToPrint.pdf");
+        printer();
+        Files.deleteIfExists(Paths.get("FileToPrint.pdf"));
     }
 
     @FXML
     void SaveOnClick(ActionEvent event) {
 
+    }
+
+    // remove the "\n"
+    private static List<String> remove(String text) {
+        ArrayList<String> strings = new ArrayList<>();
+
+        StringBuilder b = new StringBuilder();
+        for (int i = 0; i < text.length(); i++) {
+            if (WinAnsiEncoding.INSTANCE.contains(text.charAt(i))) {
+                b.append(text.charAt(i));
+            }else{
+                strings.add(b.toString());
+                b = new StringBuilder();
+            }
+        }
+        return strings;
+    }
+
+    private void export2pdf(String fileName) {
+        try {
+            PDDocument doc = new PDDocument();
+            PDPage page = new PDPage();
+            doc.addPage(page);
+            PDPageContentStream contentStream = new PDPageContentStream(doc, page);
+            //Begin the Content stream
+            contentStream.beginText();
+            //Setting the font to the Content stream
+            contentStream.setFont(PDType1Font.TIMES_ROMAN, 12);
+            //Setting the leading
+            contentStream.setLeading(14.5f);
+            //Setting the position for the line
+            contentStream.newLineAtOffset(25, 750);
+            // make sure the text endwiths "\n"
+            textArea.appendText("\n");
+            String text = textArea.getText();
+            List<String> remove = remove(text);
+            remove.forEach((str) -> {
+                try {
+                    contentStream.showText(str);
+                    contentStream.newLine();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            });
+            //Ending the content stream
+            contentStream.endText();
+            //Closing the content stream
+            contentStream.close();
+            doc.save(fileName);
+            doc.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @FXML
+    void export2pdf(ActionEvent event) {
+        export2pdf("Exported.pdf");
+    }
+
+    private static void printer() {
+        FileChooser file2Selected = new FileChooser();
+        file2Selected.setTitle("File to Print");
+        file2Selected.setInitialDirectory(
+                new File("./")
+        );
+        file2Selected.setSelectedExtensionFilter(new FileChooser.ExtensionFilter("pdf", "*.pdf"));
+        File file2Print = file2Selected.showOpenDialog(new PopupWindow() {
+        });
+        if (file2Print != null) {
+            // build print request attribute set
+            HashPrintRequestAttributeSet pras = new HashPrintRequestAttributeSet();
+            // set the print format, select AUTOSENSE
+            DocFlavor flavor = DocFlavor.INPUT_STREAM.AUTOSENSE;
+            // find all available printing services
+            PrintService[] printService = PrintServiceLookup.lookupPrintServices(flavor, pras);
+            // locate the default print service
+            PrintService defaultService = PrintServiceLookup.lookupDefaultPrintService();
+            // show print dialog
+            PrintService service = ServiceUI.printDialog(null, 200, 200, printService,
+                    defaultService, flavor, pras);
+            if (service != null) {
+                try {
+                    DocPrintJob job = service.createPrintJob(); // create a print job
+                    FileInputStream fis = new FileInputStream(file2Print); // construct the file stream to be printed
+                    DocAttributeSet das = new HashDocAttributeSet();
+                    Doc doc = new SimpleDoc(fis, flavor, das);
+                    job.print(doc, pras);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     @FXML
@@ -236,7 +353,6 @@ public class Notepad {
     }
 
 
-
     private void updateTime() {
         LocalTime now = LocalTime.now();
         TimeAndDate.setText(String.format("Time %d:%d:%d", now.getHour(), now.getMinute(), now.getSecond()));
@@ -278,5 +394,6 @@ public class Notepad {
         showTime();
 
     }
+
 
 }
