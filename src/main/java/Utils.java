@@ -10,7 +10,9 @@ import org.odftoolkit.odfdom.doc.OdfDocument;
 import org.odftoolkit.odfdom.dom.element.office.OfficeTextElement;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -63,7 +65,11 @@ public class Utils {
 
     // read String from a file
     public static String getFileString(File file) throws IOException {
-        return Arrays.toString(Files.readAllBytes(file.toPath()));
+        FileInputStream in = new FileInputStream(file);
+        byte[] fileContent = new byte[(int)file.length()];
+        in.read(fileContent);
+        in.close();
+        return new String(fileContent, StandardCharsets.UTF_8);
     }
 
     // write String into a File named filename
@@ -101,7 +107,7 @@ public class Utils {
         int currentIndex = -1;
         char currentChar = 0;
         String identifier = "";
-        StringBuilder out = new StringBuilder("<link rel=\"stylesheet\" href=\"keywords.css\">\n");
+        StringBuilder out = new StringBuilder("<link rel=\"stylesheet\" href=\"src/main/resources/keywords.css\">\n");
 
         out.append("<div></div>");
         out.append("<span class=\"lineNumberStyle\">"

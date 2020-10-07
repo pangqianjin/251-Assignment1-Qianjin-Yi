@@ -14,34 +14,129 @@ command line and Enter.
 >
     .
     ├── README.md
-    ├── keywords.css
+    ├── gitlog.txt
     ├── pom.xml
+    ├── reports
+    │   ├── metrics
+    │   │   ├── CodeComplexity.csv
+    │   │   └── CodeSize.csv
+    │   └── pmd
+    │       └── report.html
     ├── src
     │   ├── main
     │   │   ├── java
+    │   │   │   ├── Configuration.java
     │   │   │   ├── FileOperation.java
+    │   │   │   ├── KeyWordsMap.java
     │   │   │   ├── Main.java
     │   │   │   ├── Notepad.java
     │   │   │   └── Utils.java
     │   │   └── resources
+    │   │       ├── conf.yml
+    │   │       ├── keywords.css
     │   │       ├── notepad.fxml
     │   │       └── notepad.png
     │   └── test
-    │       └── java
-    │           └── NotepadTest.java
+    │       ├── java
+    │       │   └── NotepadTest.java
+    │       └── test_open_content.txt
     └── tree.txt
+    
+    9 directories, 19 files
 
-6 directories, 11 files
+
+
 ### files description
 *.java files is the source code, notepad.fxml is the configuration 
 file for the FX Controller, and notepad.png is the 
 icon of the Application. keywords.css is the style 
 for the color of the keywords to be highlighted.
 NotepadTest.java is a test file to test open, save and 
-search.
+search. test_open_content.txt is for the test.
 
 ## a couple of the most significant git commit IDs
 >
+    commit 9b61f473f16beb20ab10fac81e95e24f3e6d135e
+    Author: gaoyi <577981827@qq.com>
+    Date:   Wed Oct 7 18:45:49 2020 +0800
+    
+        change gitignore
+    
+    commit 6bc9caffbe13e108faf89725831dc4e37dc0b280
+    Merge: 3b9b97a 201daa2
+    Author: gaoyi <577981827@qq.com>
+    Date:   Wed Oct 7 18:43:58 2020 +0800
+    
+        Merge branch 'develop'
+    
+    commit 201daa26453995656a71e8662d179f63f0382e9a
+    Merge: b4cbff6 0ca67ad
+    Author: gaoyi <577981827@qq.com>
+    Date:   Wed Oct 7 18:40:03 2020 +0800
+    
+        Merge branch 'develop' of https://github.com/pangqianjin/251-Assignment1-Qianjin-Yi into develop
+    
+    commit b4cbff62970a3b88c8e400b6b97e244997057ed1
+    Author: gaoyi <577981827@qq.com>
+    Date:   Wed Oct 7 18:37:54 2020 +0800
+    
+        fix test
+    
+    commit 34d1afcf122c8bf9712d0c5321e1d7167a324184
+    Author: gaoyi <577981827@qq.com>
+    Date:   Wed Oct 7 18:36:53 2020 +0800
+    
+        optimize utils & adapt to configuration
+    
+    commit 6f390c48c110aafa64f8307f1921dca24e01c522
+    Author: gaoyi <577981827@qq.com>
+    Date:   Wed Oct 7 18:26:34 2020 +0800
+    
+        optimize printer func
+    
+    commit 5fe2e9f0c7747f721714deff2140c88d26a34c6d
+    Author: gaoyi <577981827@qq.com>
+    Date:   Wed Oct 7 18:25:40 2020 +0800
+    
+        add about func configuration and syntex highlight configuration
+    
+    commit 3435dbd8eeafb2aac31234f2e31d868802222411
+    Author: gaoyi <577981827@qq.com>
+    Date:   Tue Oct 6 22:51:16 2020 +0800
+    
+        fix test bug for search
+    
+    commit 0ca67ad034f1cadf4358c2c53415fba68d3a80e8
+    Author: qianjin <2594622441@qq.com>
+    Date:   Tue Oct 6 22:02:01 2020 +0800
+    
+        add reports
+    
+    commit 5c7aaa25de222ddf60f1a42f434bcf183d89f2c1
+    Author: qianjin <2594622441@qq.com>
+    Date:   Tue Oct 6 21:17:35 2020 +0800
+    
+        updated README.md
+    
+    commit 3b9b97adee46bfb6bf3ab57a2a98ceae0ab6a7bf
+    Merge: b68939f 69f7d13
+    Author: gaoyi <577981827@qq.com>
+    Date:   Tue Oct 6 19:36:43 2020 +0800
+    
+        Merge branch 'develop'
+    
+    commit 69f7d13139087c83783b2c82669d81cb5031aecb
+    Author: gaoyi <577981827@qq.com>
+    Date:   Tue Oct 6 19:35:27 2020 +0800
+    
+        add about func
+    
+    commit b68939f4ba2b64c9acb9716a3b5e3f26a744a3e4
+    Author: gaoyi <577981827@qq.com>
+    Date:   Tue Oct 6 19:28:06 2020 +0800
+    
+        add about func
+    
     commit c33b7bb6752c7bbdcd5b9dd0c25a982ac1973bf1
     Merge: d000072 1f86ec1
     Author: gaoyi <577981827@qq.com>
@@ -114,3 +209,4 @@ search.
     Date:   Tue Sep 29 16:30:45 2020 +0800
     
         initial commit
+
