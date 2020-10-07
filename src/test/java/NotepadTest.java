@@ -2,7 +2,6 @@ import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
-import javafx.stage.Stage;
 import org.assertj.core.util.Files;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -11,7 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.testfx.api.FxRobot;
 import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.ApplicationTest;
-import org.testfx.framework.junit5.Start;
+
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -27,12 +26,8 @@ class NotepadTest {
     @BeforeAll
     public static void setUpClass() throws Exception {
         ApplicationTest.launch(Main.class);
-
     }
 
-    @Start
-    private void start(Stage stage) {
-    }
 
     /**
      * @param robot - Will be injected by the test runner.
