@@ -19,7 +19,7 @@ public class Main extends Application {
         Notepad notepad = loader.getController();
         primaryStage.getIcons().add(new Image("notepad.png"));
         primaryStage.setScene(new Scene(root, primaryStage.getWidth(), primaryStage.getHeight()));
-        titleConfig(primaryStage);
+        primaryStage.setTitle("notepad");
         primaryStage.show();
 
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
@@ -28,17 +28,17 @@ public class Main extends Application {
                 Notepad.exit = true;
                 // delete all the temporary html files generated
                 File[] folder = new File("./").listFiles();
-                for(File file: folder){
-                    if(file.getName().endsWith(".html")){
+                for (File file : folder) {
+                    if (file.getName().endsWith(".html")) {
                         file.delete();
                     }
                 }
 
                 // ask to exit if the current page has not been saved
-                if(!notepad.saved&&!Utils.ifToExit("Your file has not been saved")){
+                if (!notepad.saved && !Utils.ifToExit("Your file has not been saved")) {
                     // if decide to save it
                     event.consume();
-                }else{// already saved or just don't want to save
+                } else {// already saved or just don't want to save
                     // set the exit status to true
                     Notepad.exit = true;
                 }
@@ -53,7 +53,4 @@ public class Main extends Application {
     }
 
 
-    protected static void titleConfig(Stage stage) {
-        stage.setTitle("notepad");
-    }
 }

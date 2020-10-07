@@ -80,7 +80,15 @@
             <artifactId>odfdom-java</artifactId>
             <version>0.8.10-incubating</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>1.27</version>
+        </dependency>
+
     </dependencies>
+
 
 
 </project>
