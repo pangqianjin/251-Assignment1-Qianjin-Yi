@@ -21,7 +21,7 @@ import java.util.Set;
 
 public class Utils {
 
-    
+
 
     // decide if to exit if the current page has not been saved
     public static boolean ifToExit(String message) {
