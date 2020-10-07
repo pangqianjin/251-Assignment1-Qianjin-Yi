@@ -10,18 +10,15 @@ import org.odftoolkit.odfdom.doc.OdfDocument;
 import org.odftoolkit.odfdom.dom.element.office.OfficeTextElement;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
 public class Utils {
-
-
 
     // decide if to exit if the current page has not been saved
     public static boolean ifToExit(String message) {
@@ -45,9 +42,9 @@ public class Utils {
         fileChooser.setTitle(message);
         // add filters for extension file name
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("JAVA", "*.java"),
-                new FileChooser.ExtensionFilter("PY", "*.py"),
-                new FileChooser.ExtensionFilter("CPP", "*.cpp"),
+                new FileChooser.ExtensionFilter("Java", "*.java"),
+                new FileChooser.ExtensionFilter("Python", "*.py"),
+                new FileChooser.ExtensionFilter("Cpp", "*.cpp"),
                 new FileChooser.ExtensionFilter("C", "*.c"),
                 new FileChooser.ExtensionFilter("TXT", "*.txt"),
                 new FileChooser.ExtensionFilter("OpenDocument Text", "*.odt")
@@ -66,20 +63,13 @@ public class Utils {
 
     // read String from a file
     public static String getFileString(File file) throws IOException {
-        FileInputStream in = new FileInputStream(file);
-        byte[] fileContent = new byte[(int) file.length()];
-        in.read(fileContent);
-        in.close();
-        return new String(fileContent, StandardCharsets.UTF_8);
+        return Arrays.toString(Files.readAllBytes(file.toPath()));
     }
 
     // write String into a File named filename
     public static File writeFileString(String filename, String content) throws IOException {
-        File file = new File(filename);
-        FileWriter fw = new FileWriter(file);
-        fw.write(content);
-        fw.close();
-        return file;
+        Path write = Files.write(new File(filename).toPath(), content.getBytes());
+        return write.toFile();
     }
 
 
@@ -95,30 +85,16 @@ public class Utils {
 
     // return a html structure String
     public static String getRenderedText(String src) {
-        int STATE_TEXT = 1;
-        int STATE_DOUBLE_QUOTE = 2;
-        int STATE_SINGLE_QUOTE = 3;
-        int STATE_MULTI_LINE_COMMENT = 4;
-        int STATE_LINE_COMMENT = 5;
+        final int STATE_TEXT = 1;
+        final int STATE_DOUBLE_QUOTE = 2;
+        final int STATE_SINGLE_QUOTE = 3;
+        final int STATE_MULTI_LINE_COMMENT = 4;
+        final int STATE_LINE_COMMENT = 5;
         int lineNumber = 0;
 
-        String[] literalArray = {"null", "true", "false", "None", "True",
-                "False"};
-        String[] keywordArray = {"abstract", "break", "case", "catch", "class",
-                "Class", "in", "del", "friend", "inline", "const",
-                "const", "continue", "default", "do", "else", "extends", "final",
-                "finally", "for", "goto", "if", "implements", "import",
-                "instanceof", "interface", "native", "new", "package", "private",
-                "protected", "public", "return", "static", "strictfp", "super",
-                "switch", "synchronized", "this", "throw", "throws", "transient",
-                "try", "volatile", "while"};
-        String[] primitiveTypeArray = {"boolean", "char", "byte", "short", "int",
-                "long", "float", "double", "void"};
-
-        Set<String> literalSet = new HashSet<String>(Arrays.asList(literalArray));
-        Set<String> keywordSet = new HashSet<String>(Arrays.asList(keywordArray));
-        Set<String> primitiveTypeSet = new HashSet<String>(Arrays
-                .asList(primitiveTypeArray));
+        Set<String> literalSet = new HashSet<>(Configuration.getKeyWordsMap().getLiteralArray());
+        Set<String> keywordSet = new HashSet<>(Configuration.getKeyWordsMap().getKeywordArray());
+        Set<String> primitiveTypeSet = new HashSet<>(Configuration.getKeyWordsMap().getPrimitiveTypeArray());
 
         int currentState = STATE_TEXT;
         int identifierLength = 0;
