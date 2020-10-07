@@ -43,7 +43,8 @@ class NotepadTest {
         robot.clickOn("#File").clickOn("#Open");
 
         // the testfx not support for FileChooser
-        robot.sleep(10000);
+        // so should by hand to open src/test/test_open_content.txt
+        robot.sleep(20000);
 
         // then
         org.testfx.assertions.api.Assertions.assertThat(robot.lookup("#textArea").queryAs(TextArea.class)).hasText(TEXT_OPEN);
@@ -58,9 +59,10 @@ class NotepadTest {
         robot.clickOn("#File").clickOn("#Save");
 
         // the testfx not support for FileChooser
-        robot.sleep(10000);
-
-        String s = Files.contentOf(new File("test_save_content.txt"), StandardCharsets.UTF_8);
+        // so should by hand to save src/test/test_open_content.txt
+        robot.sleep(20000);
+        String s = Files.contentOf(new File("src/test/test_save_content.txt"), StandardCharsets.UTF_8);
+        Files.delete(new File("src/test/test_save_content.txt"));
         Assertions.assertEquals(s, TEXT_SAVE);
     }
 
