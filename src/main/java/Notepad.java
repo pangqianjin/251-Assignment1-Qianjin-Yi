@@ -6,6 +6,7 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.print.*;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
@@ -24,16 +25,9 @@ import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.font.encoding.WinAnsiEncoding;
 
-import javax.print.*;
-import javax.print.attribute.DocAttributeSet;
-import javax.print.attribute.HashDocAttributeSet;
-import javax.print.attribute.HashPrintRequestAttributeSet;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -114,7 +108,7 @@ public class Notepad {
     @FXML
     void AboutOnClick(ActionEvent event) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION,
-                "Team member: Pang Qianjin, Gao Yi\nThe Notepad is in developing",
+                Configuration.getAboutContent(),
                 new ButtonType("Confirm", ButtonBar.ButtonData.RIGHT));
         alert.setTitle("About");
         alert.setHeaderText("About NotePad");
@@ -189,10 +183,17 @@ public class Notepad {
     }
 
     @FXML
-    void PrintOnClick(ActionEvent event) throws IOException {
-        export2pdf("FileToPrint.pdf");
-        printer();
-        Files.deleteIfExists(Paths.get("FileToPrint.pdf"));
+    void PrintOnClick(ActionEvent event) {
+        Printer printer = Printer.getDefaultPrinter();
+        PageLayout pageLayout
+                = printer.createPageLayout(Paper.A4, PageOrientation.PORTRAIT, Printer.MarginType.HARDWARE_MINIMUM);
+        PrinterJob job = PrinterJob.createPrinterJob();
+        if (job != null && job.showPrintDialog(textArea.getScene().getWindow())) {
+            boolean success = job.printPage(pageLayout, textArea);
+            if (success) {
+                job.endJob();
+            }
+        }
     }
 
     @FXML
@@ -262,42 +263,16 @@ public class Notepad {
 
     @FXML
     void export2pdf(ActionEvent event) {
-        export2pdf("Exported.pdf");
-    }
-
-    private static void printer() {
-        FileChooser file2Selected = new FileChooser();
-        file2Selected.setTitle("File to Print");
-        file2Selected.setInitialDirectory(
+        FileChooser fileSelected = new FileChooser();
+        fileSelected.setTitle("File to export as PDF");
+        fileSelected.setInitialDirectory(
                 new File("./")
         );
-        file2Selected.setSelectedExtensionFilter(new FileChooser.ExtensionFilter("pdf", "*.pdf"));
-        File file2Print = file2Selected.showOpenDialog(new PopupWindow() {
+        fileSelected.getExtensionFilters().add(new FileChooser.ExtensionFilter("pdf", "*.pdf"));
+        File pdf = fileSelected.showSaveDialog(new PopupWindow() {
         });
-        if (file2Print != null) {
-            // build print request attribute set
-            HashPrintRequestAttributeSet pras = new HashPrintRequestAttributeSet();
-            // set the print format, select AUTOSENSE
-            DocFlavor flavor = DocFlavor.INPUT_STREAM.AUTOSENSE;
-            // find all available printing services
-            PrintService[] printService = PrintServiceLookup.lookupPrintServices(flavor, pras);
-            // locate the default print service
-            PrintService defaultService = PrintServiceLookup.lookupDefaultPrintService();
-            // show print dialog
-            PrintService service = ServiceUI.printDialog(null, 200, 200, printService,
-                    defaultService, flavor, pras);
-            if (service != null) {
-                try {
-                    DocPrintJob job = service.createPrintJob(); // create a print job
-                    FileInputStream fis = new FileInputStream(file2Print); // construct the file stream to be printed
-                    DocAttributeSet das = new HashDocAttributeSet();
-                    Doc doc = new SimpleDoc(fis, flavor, das);
-                    job.print(doc, pras);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        if (pdf != null)
+            export2pdf(pdf.getName());
     }
 
     @FXML
