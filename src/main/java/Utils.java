@@ -11,12 +11,13 @@ import org.odftoolkit.odfdom.dom.element.office.OfficeTextElement;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Utils {
 
@@ -63,7 +64,7 @@ public class Utils {
 
     // read String from a file
     public static String getFileString(File file) throws IOException {
-        return Arrays.toString(Files.readAllBytes(file.toPath()));
+        return Files.readAllLines(file.toPath(), StandardCharsets.UTF_8).parallelStream().collect(Collectors.joining());
     }
 
     // write String into a File named filename
