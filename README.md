@@ -5,11 +5,15 @@
 
 ## How to run and folders contained
 ### how to run
+Required Java version 1.8 at least.
+For higher version, need install JavaFX dependently to run.
+
 There is a main method in the Main.java, 
 just run it. Or because it is a Maven project, 
 you can cd to the top level of the project and 
 input <mvn exec:java "-Dexec.mainClass=Main"> in the 
 command line and Enter.
+
 ### folders contained
 >
     .
@@ -41,7 +45,7 @@ command line and Enter.
     │       │   └── NotepadTest.java
     │       └── test_open_content.txt
     └── tree.txt
-    
+
     9 directories, 19 files
 
 
@@ -59,7 +63,7 @@ search. test_open_content.txt is for the test.
     commit 9b61f473f16beb20ab10fac81e95e24f3e6d135e
     Author: gaoyi <577981827@qq.com>
     Date:   Wed Oct 7 18:45:49 2020 +0800
-    
+
         change gitignore
     
     commit 6bc9caffbe13e108faf89725831dc4e37dc0b280
