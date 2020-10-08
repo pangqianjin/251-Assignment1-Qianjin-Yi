@@ -97,6 +97,8 @@ public class Notepad {
     // the time thread stop variable
     public static volatile boolean exit = false;
 
+    // current key index
+    protected int curKeyIdx = 0;
     // store the keys anchor
     protected static List<int[]> keysCoordinates = new LinkedList<>();
 
@@ -288,41 +290,46 @@ public class Notepad {
     }
 
     private void highlight(int[] keyCoordinate) {
-
         textArea.selectRange(keyCoordinate[0], keyCoordinate[1]);
         textArea.setStyle("-fx-highlight-fill: yellow");
-
-        // cycle the keys coordinates
-        Collections.rotate(keysCoordinates, -1);
     }
 
     private void keys2Coordinate(String key, int keyLen) {
-        // filter the line contains key
         List<String> keyLine = textArea.getParagraphs()
                 .parallelStream()
-                .filter(oneLine -> oneLine.toString().contains(key))
                 .map(CharSequence::toString)
                 .collect(Collectors.toList());
 
         int anchor = 0;
+        int totalNum = 0;
+        int lastLineNum = 0;
+        int lineIdx = -1;
         // every line
         for (String str : keyLine) {
             int lineLen = str.length();
+            lineIdx++;
+            totalNum += lineLen;
             // set select anchor start
-            anchor += str.indexOf(key);
-            for (; anchor <= lineLen - keyLen; anchor++) {
-                // find the substring and check whether contains key
-                String substring = str.substring(anchor, anchor + keyLen);
-                if (substring.contains(key)) {
-                    int[] c = {anchor, anchor + keyLen};
-                    if (keysCoordinates.contains(c)) continue;
-                    keysCoordinates.add(c);
+            int isContain = str.indexOf(key);
+            if (isContain != -1){
+                for (; anchor <= totalNum - keyLen; anchor++) {
+                    // find the substring and check whether contains key
+                    int beginIndex = anchor - lastLineNum;
+                    String substring = str.substring(beginIndex, beginIndex + keyLen);
+                    if (substring.contains(key)) {
+                        int start = anchor + lineIdx;
+                        int[] c = {start, start + keyLen};
+                        if (keysCoordinates.contains(c)) continue;
+                        keysCoordinates.add(c);
+                    }
                 }
             }
-            // next line needs to relocate the anchor
-            anchor = lineLen;
+            // relocate anchor to next line start
+            anchor = totalNum;
+            lastLineNum += lineLen;
         }
     }
+
 
     @FXML
     void searchKeys(ActionEvent event) {
@@ -336,11 +343,14 @@ public class Notepad {
         nextKey(new ActionEvent());
     }
 
-
     @FXML
     void nextKey(ActionEvent event) {
-        if (keysCoordinates.size() > 0) highlight(keysCoordinates.get(0));
-        else searchKeys(new ActionEvent());
+        int size = keysCoordinates.size();
+        if (size > 0) {
+            // cycle the keys coordinates
+            highlight(keysCoordinates.get(curKeyIdx % size));
+            curKeyIdx++;
+        } else searchKeys(new ActionEvent());
     }
 
     private void shortcuts() {
