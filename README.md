@@ -43,7 +43,7 @@ command line and Enter.
     │   └── test
     │       ├── java
     │       │   └── NotepadTest.java
-    │       └── test_open_content.txt
+   │       └── test_open_content.txt
     └── tree.txt
 
     9 directories, 19 files

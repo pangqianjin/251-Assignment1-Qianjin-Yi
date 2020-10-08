@@ -110,6 +110,7 @@ public class Utils {
         StringBuilder out = new StringBuilder("<link rel=\"stylesheet\" href=\"src/main/resources/keywords.css\">\n");
 
         out.append("<div></div>");
+        out.append("<pre>");
         out.append("<span class=\"lineNumberStyle\">"
                 + (++lineNumber) + " </span>");
 
@@ -228,6 +229,6 @@ public class Utils {
             }
             identifierLength = 0;
         }
-        return out.toString();
+        return out.append("</pre>").toString();
     }
 }
