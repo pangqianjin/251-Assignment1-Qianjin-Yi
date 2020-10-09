@@ -25,7 +25,6 @@ public class Main extends Application {
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent event) {
-                Notepad.exit = true;
                 // delete all the temporary html files generated
                 File[] folder = new File("./").listFiles();
                 for (File file : folder) {
@@ -40,7 +39,11 @@ public class Main extends Application {
                     event.consume();
                 } else {// already saved or just don't want to save
                     // set the exit status to true
-                    Notepad.exit = true;
+                    try {
+                        Notepad.class.getDeclaredField("exit").setBoolean(notepad,true);
+                    } catch (NoSuchFieldException | IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });

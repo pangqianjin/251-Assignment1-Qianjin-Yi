@@ -95,7 +95,7 @@ public class Notepad {
     private TextArea textArea; // Value injected by FXMLLoader
 
     // the time thread stop variable
-    public static volatile boolean exit = false;
+    public volatile boolean exit = false;
 
     // current key index
     protected int curKeyIdx = 0;
@@ -395,7 +395,6 @@ public class Notepad {
     }
 
     private void showTime() {
-        // the clock thread is not stopped till the windows closed
         new Thread(() -> {
             while (!exit) {
                 updateTime();
