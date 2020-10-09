@@ -309,18 +309,20 @@ public class Notepad {
             totalNum += lineLen;
             // set select anchor start
             int isContain = str.indexOf(key);
-            if (isContain != -1){
+            if (isContain != -1) {
                 // not search the word separated by new line
-                for (; anchor <= totalNum - keyLen; anchor++) {
+                while (anchor <= totalNum - keyLen) {
                     // find the substring and check whether contains key
                     int beginIndex = anchor - lastLineNum;
-                    String substring = str.substring(beginIndex, beginIndex + keyLen);
+                    String substring = str.substring(beginIndex);
                     if (substring.contains(key)) {
-                        int start = anchor + lineIdx;
+                        int index = substring.indexOf(key);
+                        int start = anchor + lineIdx + index;
+                        anchor += index + 1;
                         int[] c = {start, start + keyLen};
                         if (keysCoordinates.contains(c)) continue;
                         keysCoordinates.add(c);
-                    }
+                    } else break;
                 }
             }
             // relocate anchor to next line start
