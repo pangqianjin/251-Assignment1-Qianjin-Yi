@@ -265,11 +265,9 @@ public class Notepad {
 
     @FXML
     void export2pdf(ActionEvent event) {
-        FileChooser fileSelected = new FileChooser();
-        fileSelected.setTitle("File to export as PDF");
-        fileSelected.setInitialDirectory(
-                new File("./")
-        );
+        FileChooser fileSelected = Utils.initFileChooser("File to export as PDF");
+        fileSelected.getExtensionFilters().clear();
+        // only save to PDF
         fileSelected.getExtensionFilters().add(new FileChooser.ExtensionFilter("pdf", "*.pdf"));
         File pdf = fileSelected.showSaveDialog(new PopupWindow() {
         });
@@ -311,17 +309,20 @@ public class Notepad {
             totalNum += lineLen;
             // set select anchor start
             int isContain = str.indexOf(key);
-            if (isContain != -1){
-                for (; anchor <= totalNum - keyLen; anchor++) {
+            if (isContain != -1) {
+                // not search the word separated by new line
+                while (anchor <= totalNum - keyLen) {
                     // find the substring and check whether contains key
                     int beginIndex = anchor - lastLineNum;
-                    String substring = str.substring(beginIndex, beginIndex + keyLen);
+                    String substring = str.substring(beginIndex);
                     if (substring.contains(key)) {
-                        int start = anchor + lineIdx;
+                        int index = substring.indexOf(key);
+                        int start = anchor + lineIdx + index;
+                        anchor += index + 1;
                         int[] c = {start, start + keyLen};
                         if (keysCoordinates.contains(c)) continue;
                         keysCoordinates.add(c);
-                    }
+                    } else break;
                 }
             }
             // relocate anchor to next line start
@@ -371,13 +372,10 @@ public class Notepad {
 
             public void handle(KeyEvent ke) {
                 if (keyComb_C.match(ke)) {
-                    System.out.println("Key Pressed: " + keyComb_C);
                     textArea.copy();
                 } else if (keyComb_V.match(ke)) {
-                    System.out.println("Key Pressed: " + keyComb_V);
                     textArea.paste();
                 } else if (keyComb_X.match(ke)) {
-                    System.out.println("Key Pressed: " + keyComb_X);
                     textArea.cut();
                 } else {
                     return;
