@@ -18,7 +18,6 @@ import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class Utils {
 
@@ -35,14 +34,11 @@ public class Utils {
         return buttonType.filter(type -> !type.getButtonData().equals(ButtonBar.ButtonData.NO)).isPresent();
     }
 
-
-    // show a file chooser to choose a file and return it
-    public static File chooseAFile(String message, FileOperation operation) {
+    public static FileChooser initFileChooser(String title){
         FileChooser fileChooser = new FileChooser();
         // choose current directory
         fileChooser.setInitialDirectory(new File("./"));
-        fileChooser.setTitle(message);
-        // add filters for extension file name
+        fileChooser.setTitle(title);
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("Java", "*.java"),
                 new FileChooser.ExtensionFilter("Python", "*.py"),
@@ -51,6 +47,12 @@ public class Utils {
                 new FileChooser.ExtensionFilter("TXT", "*.txt"),
                 new FileChooser.ExtensionFilter("OpenDocument Text", "*.odt")
         );
+        return fileChooser;
+    }
+
+    // show a file chooser to choose a file and return it
+    public static File chooseAFile(String message, FileOperation operation) {
+        FileChooser fileChooser = initFileChooser(message);
         return operation == FileOperation.OPEN ? fileChooser.showOpenDialog(new Stage()) :
                 fileChooser.showSaveDialog(new Stage());
     }
@@ -66,7 +68,7 @@ public class Utils {
     // read String from a file
     public static String getFileString(File file) throws IOException {
         FileInputStream in = new FileInputStream(file);
-        byte[] fileContent = new byte[(int)file.length()];
+        byte[] fileContent = new byte[(int) file.length()];
         in.read(fileContent);
         in.close();
         return new String(fileContent, StandardCharsets.UTF_8);

@@ -3,6 +3,7 @@ import java.util.ArrayList;
 public class KeyWordsMap {
     ArrayList<String> literalArray = new ArrayList<>();
     ArrayList<String> keywordArray = new ArrayList<>();
+    ArrayList<String> primitiveTypeArray = new ArrayList<>();
 
     public ArrayList<String> getLiteralArray() {
         return literalArray;
@@ -27,8 +28,6 @@ public class KeyWordsMap {
     public void setPrimitiveTypeArray(ArrayList<String> primitiveTypeArray) {
         this.primitiveTypeArray = primitiveTypeArray;
     }
-
-    ArrayList<String> primitiveTypeArray = new ArrayList<>();
 
 
     @Override
