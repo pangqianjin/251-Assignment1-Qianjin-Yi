@@ -62,7 +62,7 @@
             </HBox>
             <HBox fx:id="SearchHBox" prefHeight="100.0" prefWidth="200.0" visible="false">
                <children>
-                  <TextField fx:id="SearchArea" onAction="#searchKeys" promptText="Next to search">
+                  <TextField fx:id="SearchArea" onAction="#searchKeys" promptText="Input key then Enter">
                      <HBox.margin>
                         <Insets right="10.0" />
                      </HBox.margin>
