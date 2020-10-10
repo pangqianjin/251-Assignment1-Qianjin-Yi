@@ -1,3 +1,6 @@
+## the URL of our repo
+>https://github.com/pangqianjin/251-Assignment1-Qianjin-Yi.git
+
 ## Members of the Group
 >Qianjin Pang 19029853
 >
